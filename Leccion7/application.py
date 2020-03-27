@@ -16,19 +16,19 @@ def index():
 
 @app.route("/book", methods=["POST"])
 def book():
-    #Reservar un vuelo
-    # Obtenemos el nombre de quien reserva del formulario.
+    # Reservar vuelo
+    # Obtenemos el nombre de quien reserva.
     name = request.form.get("name")
     try:
         flight_id = int(request.form.get("flight_id"))
     except ValueError:
         return render_template("error.html", message="Número de vuelo inválido.")
-    # Nos aseguramos de que el vuelo exista.
+    # Aseguramos que el vuelo exista.
     # Si el número de tuplas que devuelve la consulta es 0
     if db.execute("SELECT * FROM flights WHERE id = :id", {"id": flight_id}).rowcount == 0:
         return render_template("error.html", message="No hay tal vuelo con ese id.")
     # De lo contrario
-    # Insertamos pasajero en la tabla pasajeros según ID seleccionado del formulario
+    # Insertar pasajero en la tabla pasajeros según ID seleccionado
     db.execute("INSERT INTO passengers (name, flight_id) VALUES (:name, :flight_id)", {"name": name, "flight_id": flight_id})
     db.commit()
     return render_template("success.html")
